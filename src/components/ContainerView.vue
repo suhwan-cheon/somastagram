@@ -21,8 +21,18 @@
     </div>
   </div>
 
+  <!-- 방명록 페이지 -->
   <div v-if="step == 3">
-    <MyPage/>
+    <h4 class="guestHeader">방명록</h4>
+    <GuestBook :guest="guest" v-for="(guest) in guests" :key="guest"/>
+
+    <div class="guest-box">
+      <h5>방명록 작성</h5>
+      <input placeholder="닉네임">
+    </div>
+    <div class="write-guest">
+      <textarea class="write-box">write!</textarea>
+    </div>
   </div>
 </template>
 
@@ -30,7 +40,7 @@
 import PostView from './PostView.vue'
 import FilterBox from './FilterBox.vue'
 import colorData from '../assets/colordata.js'
-import MyPage from './MyPage.vue'
+import GuestBook from './GuestBook.vue'
 
 export default {
   data() {
@@ -41,7 +51,7 @@ export default {
   components: {
     PostView,
     FilterBox,
-    MyPage,
+    GuestBook,
   },
   props: {
     posts : Array,
@@ -49,6 +59,7 @@ export default {
     imgUrl : String,
     message : String,
     filterName : String,
+    guests : Array,
   },
   methods: {
   }
@@ -56,6 +67,9 @@ export default {
 </script>
 
 <style>
+.guestHeader {
+  padding-left: 20px;
+}
 .upload-image{
 width: 100%;
 height: 450px;
@@ -97,5 +111,9 @@ padding: 15px;
 margin: auto;
 display: block;
 outline: none;
+}
+.guest-box {
+  padding: 15px;
+  margin: auto;
 }
 </style>

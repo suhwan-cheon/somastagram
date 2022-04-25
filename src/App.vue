@@ -4,13 +4,14 @@
       <li v-if="step != 0" @click="step = 0" >Cancel</li>
     </ul>
     <ul class="header-button-right">
+      <li v-if="step == 0" @click="step = 3">방명록</li>
       <li v-if="step == 1" @click="step++">Next</li>
       <li v-if="step == 2" @click="publish">발행</li>
     </ul>
     <img src="./assets/movie.png" class="logo" />
   </div>
 
-  <ContainerView :filterName="filterName" :posts="posts" :step="step" :imgUrl="imgUrl" v-on:write="message = $event"/>
+  <ContainerView :filterName="filterName" :guests="guests" :posts="posts" :step="step" :imgUrl="imgUrl" v-on:write="message = $event"/>
 
   <div v-if="step == 0" class="footer">
     <ul class="footer-button-plus">
@@ -18,11 +19,13 @@
       <label for="file" class="input-plus">글 작성</label>
     </ul>
  </div>
+ 
 </template>
 
 <script>
 import ContainerView from './components/ContainerView.vue'
 import postdatas from './assets/postdata.js'
+import guestdatas from './assets/guestdata.js'
 import { mapMutations, mapState } from 'vuex'
 
 export default {
@@ -31,6 +34,7 @@ export default {
   data() {
     return {
       posts: postdatas,
+      guests: guestdatas,
       clicks : 0,
       url : '',
       step : 0,
@@ -57,7 +61,7 @@ export default {
      },
      publish(){
        var myPost = {
-          name: "Suhwan",
+          name: "소마 13기",
           userImage: "https://placeimg.com/100/100/arch",
           postImage: this.imgUrl,
           likes: 0,
@@ -108,6 +112,7 @@ ul {
   padding-bottom: 8px;
   position: sticky;
   top: 0;
+  z-index: 100;
 }
 .header-button-left {
   color: skyblue;
