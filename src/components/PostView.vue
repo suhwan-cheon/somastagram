@@ -4,7 +4,7 @@
       <div class="profile" :style="{ backgroundImage : `url(${post.userImage})`}"></div>
       <span class="profile-name">{{ post.name }}</span>
     </div>
-    <div :class="post.filter" class="post-body" :style="{ backgroundImage : `url(${post.postImage})` }"></div>
+    <div :class="post.filter" class="post-body" :style="{ backgroundImage: `url(http://www.somastagram.suhwanc.com:8001/${post.postImage})`, }"></div>
     <div class="likeBtn" type="button" @click="incLike">
       <img src="../assets/likes.png" class="likes" />
     </div>

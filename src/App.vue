@@ -8,10 +8,11 @@
       <li v-if="step == 1" @click="step++">Next</li>
       <li v-if="step == 2" @click="publish">발행</li>
     </ul>
-    <img src="./assets/movie.png" class="logo" />
+    <img src="./assets/somalogo3.png" class="logo" />
   </div>
 
-  <ContainerView :filterName="filterName" :guests="guests" :posts="posts" :step="step" :imgUrl="imgUrl" v-on:write="message = $event"/>
+  <ContainerView :filterName="filterName" :guests="guests" :posts="posts" :step="step" :imgUrl="imgUrl" 
+  v-on:nickName="nickName = $event" v-on:guestContext="guestContext = $event" v-on:write="message = $event" v-on:add="addGuestbook"/>
 
   <div v-if="step == 0" class="footer">
     <ul class="footer-button-plus">
@@ -27,6 +28,7 @@ import ContainerView from './components/ContainerView.vue'
 import postdatas from './assets/postdata.js'
 import guestdatas from './assets/guestdata.js'
 import { mapMutations, mapState } from 'vuex'
+import axios from 'axios'
 
 export default {
 
@@ -41,12 +43,20 @@ export default {
       imgUrl : '',
       message : '',
       filterName : '',
+      nickName: '',
+      guestContext: '',
     }
   },
   mounted() {
     this.emitter.on('wearColor', (color)=> {
       this.filterName = color;
-    })
+    });
+    fetch("http://www.somastagram.suhwanc.com:8001/api/posts")
+    .then((res) => res.json())
+    .then((fetchedPosts) => (this.posts = fetchedPosts));
+    fetch("http://www.somastagram.suhwanc.com:8001/api/guests")
+    .then((res) => res.json())
+    .then((fetchedGuests) => (this.guests = fetchedGuests));
   },
   components: {
     ContainerView,
@@ -59,20 +69,66 @@ export default {
        this.imgUrl = URL.createObjectURL(file[0]);
        this.step = 1;
      },
-     publish(){
-       var myPost = {
-          name: "소마 13기",
-          userImage: "https://placeimg.com/100/100/arch",
-          postImage: this.imgUrl,
-          likes: 0,
-          date: "Apr 25",
-          liked: false,
-          content: this.message,
-          filter: this.filterName,
+     publish() {
+      var myPost = {
+        name: "소마 13기",
+        userImage: "https://placeimg.com/100/100/arch",
+        postImage: this.imgUrl,
+        likes: 0,
+        date: "Apr 25",
+        liked: false,
+        content: this.message,
+        filter: this.filterName,
+      };
+      this.posts.unshift(myPost);
+
+      fetch(this.imgUrl)
+        .then((r) => r.blob())
+        .then((image) => {
+          const formData = new FormData();
+          formData.append("name", "소마 13기");
+          formData.append("userImage", "https://placeimg.com/100/100/arch");
+          formData.append("postImage", image);
+          formData.append("likes", 0);
+          formData.append("date", "Apr 25");
+          formData.append("liked", false);
+          formData.append("content", this.message);
+          formData.append("filter", this.filterName);
+          return formData;
+        })
+        .then((formData) =>
+          fetch("http://www.somastagram.suhwanc.com:8001/api/posts", {
+            method: "POST",
+            body: formData,
+          })
+        )
+        .catch((err) => {
+          console.error(err);
+          this.posts.pop(0);
+        })
+        .finally(() => {
+          this.step = 0;
+        });
+    },
+     addGuestbook(){
+       var myGuest = {
+         name: this.nickName,
+         content: this.guestContext,
        };
-       this.posts.unshift(myPost);
-       this.step = 0;
+       this.guests.unshift(myGuest);
+       fetch("http://www.somastagram.suhwanc.com:8001/api/guests", {method: "POST", body: JSON.stringify(myGuest), headers: {"Content-Type": "application/json"}}).catch(err=>{
+         console.error(err);
+         this.guests.pop(0);
+       })
      },
+     getData: function(){
+              axios.get('https://raw.githubusercontent.com/joshua1988/doit-vuejs/master/data/demo.json')
+              .then(function(response){
+                  alert(response);
+                  console.log(response); // 객체 형태로 반환. 파싱작업 불필요
+              });
+            }
+                
   },
 
   // computed 함수는 항상 return이 있어야 한다.
@@ -97,13 +153,13 @@ ul {
   list-style-type: none;
 }
 .logo {
-  width: 22px;
+  height: 80%;
   margin: auto;
   display: block;
   position: absolute;
   left: 0;
   right: 0;
-  top: 13px;
+  top: 5px;
 }
 .header {
   width: 100%;

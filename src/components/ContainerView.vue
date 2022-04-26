@@ -23,15 +23,22 @@
 
   <!-- 방명록 페이지 -->
   <div v-if="step == 3">
-    <h4 class="guestHeader">방명록</h4>
-    <GuestBook :guest="guest" v-for="(guest) in guests" :key="guest"/>
-
-    <div class="guest-box">
-      <h5>방명록 작성</h5>
-      <input placeholder="닉네임">
+    <div class="guest-total">
+      <h4 class="guestHeader">방명록</h4>
+      <div class="guest-comment">
+        <GuestBook :guest="guest" v-for="(guest) in guests" :key="guest"/>
+      </div>
+      <div class="guest-input">
+        <div class="guest-box">
+          <input class = "input-box" placeholder="닉네임" @input="$emit('nickName', $event.target.value)">
+        </div>
+        <div class="write-guest">
+          <textarea class="write-box" placeholder="방명록을 남겨주세요 :D" @input="$emit('guestContext', $event.target.value)"></textarea>
+        </div>
+      </div>
     </div>
-    <div class="write-guest">
-      <textarea class="write-box">write!</textarea>
+    <div class="footer-button-plus" style="margin-bottom: 5px;"> 
+      <span class="input-plus" @click="$emit('add')">작성</span>
     </div>
   </div>
 </template>
@@ -69,7 +76,38 @@ export default {
 <style>
 .guestHeader {
   padding-left: 20px;
+  margin: 10px 10px 10px 10px;
 }
+.guest-total{
+  position:relative; 
+  padding-top: 10px;
+  margin: 15px 20px 15px 20px;
+  color: #000; 
+  border-radius: 10px; 
+  background-color: #E6E6E6;
+}
+.guest-comment{
+  background-color: #FFF;
+  padding: 30px 0px 30px 0px;
+}
+
+.guest-box h5 {
+  margin: 0px 0px 4px 10px;
+}
+.input-box{
+  font-size: 15px;
+  border: 0;
+  outline: none;
+  padding-left: 10px;
+}
+.guest-input{
+  position:relative; 
+  margin: 15px 20px 15px 20px;
+  padding: 0px 10px 10px 0px;
+  color: #000; 
+  border-radius: 10px; 
+}
+
 .upload-image{
 width: 100%;
 height: 450px;
